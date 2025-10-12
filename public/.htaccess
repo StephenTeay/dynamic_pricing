@@ -1,0 +1,41 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    
+    # If request is for an existing file or directory, serve it directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Internally rewrite requests that end with .php to index.php so our router handles them
+    # but exclude known asset folders so static files still serve normally
+    RewriteCond %{REQUEST_URI} !^/assets/ [NC]
+    RewriteCond %{REQUEST_URI} !^/images/ [NC]
+    RewriteRule (.*\.php)$ index.php [L,QSA]
+
+    # Fallback: rewrite any other request to index.php (clean URLs)
+    RewriteRule ^ index.php [L,QSA]
+    
+    # Security headers
+    <FilesMatch "\.(env|json|lock)$">
+        Order deny,allow
+        Deny from all
+    </FilesMatch>
+    
+    # Prevent directory listing
+    Options -Indexes
+    
+    # Cache control for static files
+    <FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+    
+    # No cache for PHP files
+    <FilesMatch "\.(php)$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+    </FilesMatch>
+</IfModule>

@@ -9,6 +9,7 @@ ini_set('display_errors', 1);
 define('APP_NAME', 'Dynamic Pricing System');
 define('APP_VERSION', '1.0.0');
 define('APP_ENV', 'development'); // development, production
+define('APP_DEBUG', true);
 
 // Base paths
 define('BASE_PATH', dirname(__DIR__));

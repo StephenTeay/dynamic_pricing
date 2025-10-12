@@ -1,18 +1,37 @@
 <?php
 // controllers/AuthController.php
 
+require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/SellerProfile.php';
 require_once __DIR__ . '/../core/Session.php';
 require_once __DIR__ . '/../core/Validator.php';
 
-class AuthController {
+class AuthController extends Controller {
     private $userModel;
     private $sellerModel;
     
     public function __construct() {
         $this->userModel = new User();
         $this->sellerModel = new SellerProfile();
+    }
+
+    /**
+     * Show registration form
+     */
+    public function showRegister($params = []) {
+        $userType = $_GET['type'] ?? 'buyer';
+        if (!in_array($userType, ['buyer', 'seller'])) {
+            $userType = 'buyer';
+        }
+        
+        $pageTitle = APP_NAME . ' - Register as ' . ucfirst($userType);
+        $errors = Session::getFlash('errors', []);
+        $old = Session::getFlash('old', []);
+        
+        require_once __DIR__ . '/../views/layouts/header.php';
+        require_once __DIR__ . '/../views/auth/register.php';
+        require_once __DIR__ . '/../views/layouts/footer.php';
     }
     
     /**
@@ -84,7 +103,7 @@ class AuthController {
             $this->userModel->commit();
             
             Session::setFlash('success', 'Registration successful! Please login.');
-            header('Location: /login.php');
+            header('Location: /login');
             exit;
             
         } catch (Exception $e) {
@@ -99,7 +118,7 @@ class AuthController {
      */
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return $this->showLoginForm();
+            return $this->showLogin();
         }
         
         $data = Validator::sanitize($_POST);
@@ -112,14 +131,14 @@ class AuthController {
         
         if (!$validator->validate($rules)) {
             Session::setFlash('error', $validator->getFirstError());
-            return $this->showLoginForm();
+            return $this->showLogin();
         }
         
         $user = $this->userModel->verifyLogin($data['identifier'], $data['password']);
         
         if (!$user) {
             Session::setFlash('error', 'Invalid credentials or account inactive');
-            return $this->showLoginForm();
+            return $this->showLogin();
         }
         
         // Login user
@@ -129,9 +148,9 @@ class AuthController {
         
         // Redirect to appropriate dashboard
         if ($user['user_type'] === 'seller') {
-            header('Location: /seller/dashboard.php');
+            header('Location: /seller/dashboard');
         } else {
-            header('Location: /buyer/shop.php');
+            header('Location: /buyer/shop');
         }
         exit;
     }
@@ -147,10 +166,16 @@ class AuthController {
     }
     
     /**
-     * Show login form
+     * Show login form (public route)
      */
-    private function showLoginForm() {
-        include __DIR__ . '/../views/auth/login.php';
+    public function showLogin($params = []) {
+        $pageTitle = APP_NAME . ' - Login';
+        $errors = Session::getFlash('error', []);
+        $old = Session::getFlash('old', []);
+
+        require_once __DIR__ . '/../views/layouts/header.php';
+        require_once __DIR__ . '/../views/auth/login.php';
+        require_once __DIR__ . '/../views/layouts/footer.php';
     }
     
     /**
@@ -179,7 +204,7 @@ class AuthController {
         
         if ($token) {
             // Send reset email
-            $resetLink = BASE_URL . '/reset-password.php?token=' . $token;
+            $resetLink = BASE_URL . '/reset-password?token=' . $token;
             $subject = 'Password Reset Request';
             $body = "Click the link below to reset your password:\n\n$resetLink\n\nThis link expires in 1 hour.";
             
@@ -191,7 +216,7 @@ class AuthController {
             Session::setFlash('error', 'Email not found');
         }
         
-        header('Location: /login.php');
+    header('Location: /login');
         exit;
     }
     
@@ -210,7 +235,7 @@ class AuthController {
         
         if (!$token) {
             Session::setFlash('error', 'Invalid reset token');
-            header('Location: /login.php');
+            header('Location: /login');
             exit;
         }
         
@@ -218,7 +243,7 @@ class AuthController {
         
         if (!$resetData) {
             Session::setFlash('error', 'Reset token expired or invalid');
-            header('Location: /forgot-password.php');
+            header('Location: /forgot-password');
             exit;
         }
         
@@ -247,7 +272,7 @@ class AuthController {
             $this->userModel->markTokenUsed($token);
             
             Session::setFlash('success', 'Password reset successful! Please login with your new password.');
-            header('Location: /login.php');
+            header('Location: /login');
             exit;
             
         } catch (Exception $e) {
