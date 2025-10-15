@@ -36,13 +36,13 @@ $products = $productModel->getProductsWithInventory($sellerId);
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <h1>My Products</h1>
-            <a href="/seller/product_create.php" class="btn btn-primary">+ Add Product</a>
+            <a href="<?php echo url('/seller/product/create'); ?>" class="btn btn-primary">+ Add Product</a>
         </div>
         
         <?php if (empty($products)): ?>
             <div class="section">
                 <p style="text-align: center; padding: 2rem;">
-                    No products yet. <a href="/seller/product_create.php">Create your first product</a>
+                    No products yet. <a href="<?php echo url('/seller/product/create'); ?>">Create your first product</a>
                 </p>
             </div>
         <?php else: ?>
@@ -72,8 +72,8 @@ $products = $productModel->getProductsWithInventory($sellerId);
                                     <?php echo $product['is_active'] ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-danger">Inactive</span>'; ?>
                                 </td>
                                 <td>
-                                    <a href="/seller/product_edit.php?id=<?php echo $product['product_id']; ?>" class="btn btn-sm btn-primary">Edit</a>
-                                    <a href="/seller/inventory.php?product_id=<?php echo $product['product_id']; ?>" class="btn btn-sm btn-secondary">Stock</a>
+                                    <a href="<?php echo url('/seller/product/edit/' . $product['product_id']); ?>" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="<?php echo url('/seller/inventory') . '?product_id=' . urlencode($product['product_id']); ?>" class="btn btn-sm btn-secondary">Stock</a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

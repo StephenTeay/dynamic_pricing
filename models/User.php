@@ -15,11 +15,11 @@ class User extends Model {
     }
     
     public function verifyLogin($identifier, $password) {
-        $query = "SELECT * FROM {$this->table} WHERE (username = :identifier OR email = :identifier) LIMIT 1";
+        $query = "SELECT * FROM {$this->table} WHERE (username = ? OR email = ?) LIMIT 1";
         $stmt = $this->db->prepare($query);
-        $stmt->execute([':identifier' => $identifier]);
+        $stmt->execute([$identifier, $identifier]);
         $user = $stmt->fetch();
-        
+
         if ($user && password_verify($password, $user['password']) && $user['is_active']) {
             return $user;
         }

@@ -4,7 +4,7 @@
 require_once __DIR__ . '/../config/database.php';
 
 class Model {
-    protected $db;
+    public $db; // Changed to public to allow sharing between models
     protected $table = '';
     protected $primaryKey = 'id';
     
@@ -12,6 +12,18 @@ class Model {
         $database = new Database();
         $this->db = $database->getConnection();
     }
+    
+    // public function beginTransaction() {
+    //     return $this->db->beginTransaction();
+    // }
+    
+    // public function commit() {
+    //     return $this->db->commit();
+    // }
+    
+    // public function rollback() {
+    //     return $this->db->rollBack();
+    // }
     
     public function find($id) {
         $query = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id LIMIT 1";
@@ -125,6 +137,13 @@ class Model {
         foreach ($conditions as $key => $value) {
             $stmt->bindValue(":$key", $value);
         }
+    }
+    
+    /**
+     * Share the database connection with another model instance
+     */
+    public function shareConnection(Model $model) {
+        $model->db = $this->db;
     }
 }
 ?>

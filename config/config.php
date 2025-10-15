@@ -17,8 +17,33 @@ define('PUBLIC_PATH', BASE_PATH . '/public');
 define('UPLOAD_DIR', PUBLIC_PATH . '/assets/images/uploads/');
 
 // URLs
-define('BASE_URL', 'http://localhost');
-define('ASSETS_URL', BASE_URL . '/assets');
+// Compute BASE_URL dynamically so the app works when placed in a subdirectory.
+// Fallback to http://localhost when running from CLI or when server vars are not available.
+if (php_sapi_name() === 'cli' || empty($_SERVER['HTTP_HOST'])) {
+    // CLI environment or no host header available
+    define('BASE_URL', 'http://localhost');
+} else {
+    // Determine the protocol
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
+
+    // Get host (may include port)
+    $host = $_SERVER['HTTP_HOST'];
+
+    // Determine base path from SCRIPT_NAME or PHP_SELF. The public entrypoint lives in /public,
+    // so strip off the trailing /index.php or /public/index.php if present.
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+    $scriptDir = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+
+    // If the app is served from the 'public' folder, we want the path up to that folder.
+    // Example: /dynamic/dynamic_pricing/public -> keep /dynamic/dynamic_pricing/public
+    $basePath = $scriptDir === '/' ? '' : $scriptDir;
+
+    // Build BASE_URL
+    define('BASE_URL', $scheme . '://' . $host . $basePath);
+}
+
+// Assets URL relative to BASE_URL
+define('ASSETS_URL', rtrim(BASE_URL, '/') . '/assets');
 
 // Security
 define('SESSION_LIFETIME', 3600); // 1 hour

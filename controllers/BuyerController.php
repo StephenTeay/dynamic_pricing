@@ -37,7 +37,7 @@ class BuyerController {
             );
         }
         
-        include __DIR__ . '/../views/buyer/shop.php';
+    include __DIR__ . '/../views/buyer/shop.php';
     }
     
     /**
@@ -47,7 +47,7 @@ class BuyerController {
         $product = $this->productModel->getProductDetail($productId);
         
         if (!$product) {
-            header('Location: /buyer/shop.php');
+            redirect('/buyer/shop');
             exit;
         }
         

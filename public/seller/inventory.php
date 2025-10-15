@@ -31,8 +31,8 @@ $inventory = null;
 if ($productId) {
     $product = $productModel->find($productId);
     if (!$product || $product['seller_id'] != $sellerId) {
-        Session::setFlash('error', 'Product not found.');
-        header('Location: /seller/inventory.php');
+    Session::setFlash('error', 'Product not found.');
+    redirect('/seller/inventory');
         exit;
     }
     $inventory = $inventoryModel->getByProductId($productId);
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $product = $productModel->find($productId);
     if (!$product || $product['seller_id'] != $sellerId) {
         Session::setFlash('error', 'Unauthorized access.');
-        header('Location: /seller/inventory.php');
+    redirect('/seller/inventory');
         exit;
     }
     
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $lowThreshold = (int)$_POST['low_stock_threshold'];
         $highThreshold = (int)$_POST['high_stock_threshold'];
         
-        if ($inventoryModel->updateStock($productId, $quantity)) {
+    if ($inventoryModel->updateStock($productId, $quantity)) {
             $stmt = $db->prepare(
                 "UPDATE inventory SET low_stock_threshold = :low, 
                  high_stock_threshold = :high WHERE product_id = :product_id"
@@ -72,13 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             Session::setFlash('error', 'Failed to update inventory.');
         }
         
-        header('Location: /seller/inventory.php?product_id=' . $productId);
-        exit;
+    redirect('/seller/inventory' . '?product_id=' . $productId);
+    exit;
     } elseif ($action === 'adjust') {
         $adjustment = (int)$_POST['adjustment'];
         $inventoryModel->adjustStock($productId, $adjustment);
-        Session::setFlash('success', 'Stock adjusted!');
-        header('Location: /seller/inventory.php?product_id=' . $productId);
+    Session::setFlash('success', 'Stock adjusted!');
+    redirect('/seller/inventory' . '?product_id=' . $productId);
         exit;
     }
 }
@@ -152,7 +152,7 @@ $products = $productModel->getProductsWithInventory($sellerId);
                     </div>
                     
                     <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                        <a href="/seller/inventory.php" class="btn btn-secondary">Back</a>
+                        <a href="<?php echo url('/seller/inventory'); ?>" class="btn btn-secondary">Back</a>
                         <button type="submit" class="btn btn-primary">Update Inventory</button>
                     </div>
                 </form>
@@ -180,7 +180,7 @@ $products = $productModel->getProductsWithInventory($sellerId);
                 
                 <?php if (empty($products)): ?>
                     <p style="text-align: center; padding: 2rem; color: #64748b;">
-                        No products found. <a href="/seller/products.php">Add products first</a>
+                        No products found. <a href="<?php echo url('/seller/products'); ?>">Add products first</a>
                     </p>
                 <?php else: ?>
                     <div class="table-responsive">
@@ -232,7 +232,7 @@ $products = $productModel->getProductsWithInventory($sellerId);
                                         ?>
                                     </td>
                                     <td>
-                                        <a href="/seller/inventory.php?product_id=<?php echo $prod['product_id']; ?>" 
+                                                     <a href="<?php echo url('/seller/inventory') . '?product_id=' . urlencode($prod['product_id']); ?>" 
                                            class="btn btn-sm btn-primary">
                                             Edit
                                         </a>

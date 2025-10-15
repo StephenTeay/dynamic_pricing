@@ -14,6 +14,8 @@ class AuthController extends Controller {
     public function __construct() {
         $this->userModel = new User();
         $this->sellerModel = new SellerProfile();
+        // Share the database connection between models
+        $this->userModel->shareConnection($this->sellerModel);
     }
 
     /**
@@ -72,6 +74,12 @@ class AuthController extends Controller {
         }
         
         try {
+            // Log registration attempt
+            error_log(sprintf("[%s] Starting registration for user type: %s", 
+                date('Y-m-d H:i:s'), 
+                $data['user_type']
+            ));
+            
             $this->userModel->beginTransaction();
             
             // Create user
@@ -103,11 +111,23 @@ class AuthController extends Controller {
             $this->userModel->commit();
             
             Session::setFlash('success', 'Registration successful! Please login.');
-            header('Location: /login');
+            redirect('/login');
             exit;
             
         } catch (Exception $e) {
             $this->userModel->rollback();
+            
+            // Log the detailed error
+            $logFile = __DIR__ . '/../logs/error.log';
+            $message = sprintf("[%s] Registration failed: %s in %s on line %d\nStack trace: %s\n",
+                date('Y-m-d H:i:s'),
+                $e->getMessage(),
+                $e->getFile(),
+                $e->getLine(),
+                $e->getTraceAsString()
+            );
+            error_log($message, 3, $logFile);
+            
             Session::setFlash('error', 'Registration failed: ' . $e->getMessage());
             return $this->showRegisterForm($data);
         }
@@ -120,39 +140,57 @@ class AuthController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             return $this->showLogin();
         }
-        
+
         $data = Validator::sanitize($_POST);
-        
+
         $validator = new Validator($data);
         $rules = [
             'identifier' => 'required',
             'password' => 'required'
         ];
-        
+
         if (!$validator->validate($rules)) {
             Session::setFlash('error', $validator->getFirstError());
             return $this->showLogin();
         }
-        
-        $user = $this->userModel->verifyLogin($data['identifier'], $data['password']);
-        
-        if (!$user) {
-            Session::setFlash('error', 'Invalid credentials or account inactive');
+
+        try {
+            $user = $this->userModel->verifyLogin($data['identifier'], $data['password']);
+
+            if (!$user) {
+                Session::setFlash('error', 'Invalid credentials or account inactive');
+                return $this->showLogin();
+            }
+
+            // Login user
+            Session::login($user['user_id'], $user['user_type'], $user['username']);
+
+            Session::setFlash('success', 'Login successful!');
+
+            // Redirect to appropriate dashboard
+            if ($user['user_type'] === 'seller') {
+                redirect('/seller/dashboard');
+            } else {
+                redirect('/buyer/shop');
+            }
+            exit;
+        } catch (Exception $e) {
+            // Log the exception to app logs for debugging
+            $logFile = __DIR__ . '/../logs/error.log';
+            $message = sprintf("[%s] Login exception: %s in %s on line %d\nStack: %s\n",
+                date('Y-m-d H:i:s'), $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString()
+            );
+            error_log($message, 3, $logFile);
+
+            // Show a generic error to the user
+            Session::setFlash('error', 'An internal error occurred while attempting to log you in. Please try again later.');
+            // Also show 500 page when in debug mode
+            if (defined('APP_DEBUG') && APP_DEBUG) {
+                throw $e; // let the global handler show the stack in debug
+            }
+
             return $this->showLogin();
         }
-        
-        // Login user
-        Session::login($user['user_id'], $user['user_type'], $user['username']);
-        
-        Session::setFlash('success', 'Login successful!');
-        
-        // Redirect to appropriate dashboard
-        if ($user['user_type'] === 'seller') {
-            header('Location: /seller/dashboard');
-        } else {
-            header('Location: /buyer/shop');
-        }
-        exit;
     }
     
     /**
@@ -160,9 +198,9 @@ class AuthController extends Controller {
      */
     public function logout() {
         Session::logout();
-        Session::setFlash('success', 'You have been logged out');
-        header('Location: /');
-        exit;
+    Session::setFlash('success', 'You have been logged out');
+    redirect('/');
+    exit;
     }
     
     /**
@@ -216,7 +254,7 @@ class AuthController extends Controller {
             Session::setFlash('error', 'Email not found');
         }
         
-    header('Location: /login');
+    redirect('/login');
         exit;
     }
     
@@ -235,7 +273,7 @@ class AuthController extends Controller {
         
         if (!$token) {
             Session::setFlash('error', 'Invalid reset token');
-            header('Location: /login');
+            redirect('/login');
             exit;
         }
         
@@ -243,7 +281,7 @@ class AuthController extends Controller {
         
         if (!$resetData) {
             Session::setFlash('error', 'Reset token expired or invalid');
-            header('Location: /forgot-password');
+            redirect('/forgot-password');
             exit;
         }
         
@@ -272,7 +310,7 @@ class AuthController extends Controller {
             $this->userModel->markTokenUsed($token);
             
             Session::setFlash('success', 'Password reset successful! Please login with your new password.');
-            header('Location: /login');
+            redirect('/login');
             exit;
             
         } catch (Exception $e) {
@@ -296,7 +334,7 @@ class AuthController extends Controller {
         
         if (!Session::isLoggedIn()) {
             Session::setFlash('error', 'Please login first');
-            header('Location: /login.php');
+            redirect('/login');
             exit;
         }
     }
@@ -309,7 +347,7 @@ class AuthController extends Controller {
         
         if (Session::getUserType() !== USER_TYPE_SELLER) {
             Session::setFlash('error', 'Only sellers can access this page');
-            header('Location: /');
+            redirect('/');
             exit;
         }
     }
@@ -322,7 +360,7 @@ class AuthController extends Controller {
         
         if (Session::getUserType() !== USER_TYPE_BUYER) {
             Session::setFlash('error', 'Only buyers can access this page');
-            header('Location: /');
+            redirect('/');
             exit;
         }
     }
@@ -335,7 +373,7 @@ class AuthController extends Controller {
         
         if (Session::getUserType() !== USER_TYPE_ADMIN) {
             Session::setFlash('error', 'Only administrators can access this page');
-            header('Location: /');
+            redirect('/');
             exit;
         }
     }
@@ -348,9 +386,9 @@ class AuthController extends Controller {
         
         if (Session::isLoggedIn()) {
             if (Session::isSeller()) {
-                header('Location: /seller/dashboard.php');
+                redirect('/seller/dashboard');
             } else {
-                header('Location: /buyer/shop.php');
+                redirect('/buyer/shop');
             }
             exit;
         }

@@ -34,8 +34,22 @@ function formatDate($date, $format = 'M d, Y') {
  * Redirect to URL
  */
 function redirect($url) {
+    // If a relative path is passed (not an absolute URL), prefix with BASE_URL
+    if (!preg_match('/^https?:\/\//i', $url)) {
+        $url = rtrim(BASE_URL, '/') . '/' . ltrim($url, '/');
+    }
     header("Location: {$url}");
     exit;
+}
+
+/**
+ * Build absolute URL for the application using BASE_URL
+ * Usage: url('/login') => http://host/subpath/login
+ */
+function url($path = '') {
+    $base = rtrim(BASE_URL, '/');
+    $path = '/' . ltrim($path, '/');
+    return $base . $path;
 }
 
 /**

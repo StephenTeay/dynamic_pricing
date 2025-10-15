@@ -15,7 +15,7 @@ if (!isset($product)) {
                 Low stock threshold: <?php echo $product['low_stock_threshold']; ?>
             </p>
         </div>
-        <a href="/seller/inventory?product_id=<?php echo $product['product_id']; ?>" 
+        <a href="<?php echo url('/seller/inventory') . '?product_id=' . urlencode($product['product_id']); ?>" 
            style="margin-left: auto;" class="btn btn-sm" style="background-color: #f59e0b; color: white;">
             Restock
         </a>

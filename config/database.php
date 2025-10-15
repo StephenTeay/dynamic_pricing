@@ -20,6 +20,8 @@ class Database {
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES => false,
+                    PDO::ATTR_TIMEOUT => 5,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET SESSION wait_timeout=5, innodb_lock_wait_timeout=5"
                 ]
             );
         } catch(PDOException $e) {

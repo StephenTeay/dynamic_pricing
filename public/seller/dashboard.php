@@ -112,7 +112,7 @@ $priceHistory = $stmt->fetchAll();
                             <td><?php echo $product['low_stock_threshold']; ?></td>
                             <td>₦<?php echo number_format($product['current_price'], 2); ?></td>
                             <td>
-                                <a href="/seller/inventory.php?product_id=<?php echo $product['product_id']; ?>" class="btn btn-sm">
+                                <a href="<?php echo url('/seller/inventory') . '?product_id=' . urlencode($product['product_id']); ?>" class="btn btn-sm">
                                     Restock
                                 </a>
                             </td>
@@ -186,7 +186,7 @@ $priceHistory = $stmt->fetchAll();
                             </td>
                             <td><?php echo date('M d, Y', strtotime($order['created_at'])); ?></td>
                             <td>
-                                <a href="/seller/order_detail.php?id=<?php echo $order['order_id']; ?>" class="btn btn-sm">
+                                <a href="<?php echo url('/seller/order_detail') . '?id=' . urlencode($order['order_id']); ?>" class="btn btn-sm">
                                     View
                                 </a>
                             </td>

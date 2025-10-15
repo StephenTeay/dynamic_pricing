@@ -67,7 +67,7 @@ $orders = $orderModel->getOrdersBySeller($sellerId);
                                 </td>
                                 <td><?php echo date('M d, Y', strtotime($order['created_at'])); ?></td>
                                 <td>
-                                    <a href="/seller/order_detail.php?id=<?php echo $order['order_id']; ?>" class="btn btn-sm btn-primary">View</a>
+                                    <a href="<?php echo url('/seller/order_detail') . '?id=' . urlencode($order['order_id']); ?>" class="btn btn-sm btn-primary">View</a>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

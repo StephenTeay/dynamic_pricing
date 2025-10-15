@@ -1,5 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /dynamic/dynamic_pricing/public/
     
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .

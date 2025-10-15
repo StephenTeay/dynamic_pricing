@@ -52,7 +52,7 @@
             <div class="error-code">500</div>
             <div class="error-message">Internal Server Error</div>
             <p style="margin-bottom: 2rem;">Ouch!</p>
-            <a href="/" class="error-link">Go Home</a>
+            <a href="<?php echo url('/'); ?>" class="error-link">Go Home</a>
         </div>
     </div>
 </body>

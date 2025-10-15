@@ -105,7 +105,7 @@ if (!defined('APP_NAME')) {
             </div>
         <?php endif; ?>
         
-    <form method="POST" action="/auth/login">
+    <form method="POST" action="<?php echo url('/auth/login'); ?>">
             <div class="form-group">
                 <label for="identifier">Email or Username</label>
                 <input type="text" id="identifier" name="identifier" required>
@@ -119,8 +119,8 @@ if (!defined('APP_NAME')) {
             <button type="submit" class="btn-submit">Login</button>
             
             <div class="auth-links">
-                <p>Don't have an account? <a href="/register">Register here</a></p>
-                <p><a href="/forgot-password">Forgot password?</a></p>
+                <p>Don't have an account? <a href="<?php echo url('/register'); ?>">Register here</a></p>
+                <p><a href="<?php echo url('/forgot-password'); ?>">Forgot password?</a></p>
             </div>
         </form>
     </div>

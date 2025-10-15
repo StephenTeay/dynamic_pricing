@@ -121,7 +121,7 @@ if (!defined('APP_NAME')) {
             Enter your email address and we'll send you a link to reset your password.
         </p>
         
-    <form method="POST" action="/auth/forgot-password">
+    <form method="POST" action="<?php echo url('/auth/forgot-password'); ?>">
             <div class="form-group">
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" required>
@@ -130,7 +130,7 @@ if (!defined('APP_NAME')) {
             <button type="submit" class="btn-submit">Send Reset Link</button>
             
             <div class="auth-links">
-                <p><a href="/login">Back to login</a></p>
+                <p><a href="<?php echo url('/login'); ?>">Back to login</a></p>
             </div>
         </form>
     </div>

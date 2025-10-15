@@ -11,27 +11,29 @@ return [
     'GET' => [
         // Public routes
         '/' => 'HomeController@index',
-        '/login' => 'AuthController@showLogin',
-        '/auth/logout' => 'AuthController@logout',
-        '/register' => 'AuthController@showRegister',
-        '/forgot-password' => 'AuthController@showForgotPassword',
-        
+    '/login' => 'AuthController@showLogin',
+    '/auth/logout' => 'AuthController@logout',
+    '/register' => 'AuthController@showRegister',
+    '/forgot-password' => 'AuthController@showForgotPassword',
+
         // Buyer routes
-        '/buyer/shop' => 'BuyerController@shop',
-        '/buyer/product/{id}' => 'BuyerController@productDetail',
-        '/buyer/cart' => 'BuyerController@viewCart',
-        '/buyer/checkout' => 'BuyerController@checkout',
-        '/buyer/orders' => 'BuyerController@myOrders',
-        
+    '/buyer/shop' => 'BuyerController@shop',
+    '/buyer/product/{id}' => 'BuyerController@productDetail',
+    '/buyer/cart' => 'BuyerController@viewCart',
+    '/buyer/checkout' => 'BuyerController@checkout',
+    '/buyer/orders' => 'BuyerController@myOrders',
+
         // Seller routes
-        '/seller/dashboard' => 'SellerController@dashboard',
-        '/seller/products' => 'SellerController@products',
-        '/seller/product/create' => 'SellerController@createProductForm',
-        '/seller/product/edit/{id}' => 'SellerController@editProductForm',
-        '/seller/inventory' => 'SellerController@inventory',
-        '/seller/pricing' => 'SellerController@pricing',
-        '/seller/orders' => 'SellerController@orders',
-        '/seller/analytics' => 'SellerController@analytics'
+    '/seller/dashboard' => 'SellerController@dashboard',
+    '/seller/products' => 'SellerController@products',
+    '/seller/product/create' => 'SellerController@createProductForm',
+    '/seller/product/edit/{id}' => 'SellerController@editProductForm',
+    '/seller/inventory' => 'SellerController@inventory',
+    '/seller/pricing' => 'SellerController@pricing',
+    '/seller/orders' => 'SellerController@orders',
+    '/seller/analytics' => 'SellerController@analytics',
+
+    // (No extra duplicate dynamic-pricing prefixed routes)
     ],
     
     // POST routes
@@ -49,21 +51,13 @@ return [
         '/buyer/cart/remove' => 'BuyerController@removeFromCart',
         '/buyer/order/create' => 'BuyerController@createOrder',
         
-        // Seller routes
-        '/seller/product/create' => 'SellerController@createProduct',
-        '/seller/product/update/{id}' => 'SellerController@updateProduct',
-        '/seller/product/delete/{id}' => 'SellerController@deleteProduct',
-        '/seller/inventory/update' => 'SellerController@updateInventory',
-        '/seller/pricing/rule/create' => 'SellerController@createPricingRule',
-        '/seller/pricing/rule/update/{id}' => 'SellerController@updatePricingRule',
-        '/seller/pricing/rule/delete/{id}' => 'SellerController@deletePricingRule',
-
-        // Seller POST actions
-        '/seller/product/store' => 'SellerController@storeProduct',
-        '/seller/product/update/{id}' => 'SellerController@updateProduct',
-        '/seller/inventory/update' => 'SellerController@updateInventory',
-        '/seller/pricing/update' => 'SellerController@updatePrice',
+    // Seller routes
+    '/seller/product/store' => 'SellerController@storeProduct',
+    '/seller/product/update/{id}' => 'SellerController@updateProduct',
+    '/seller/inventory/update' => 'SellerController@updateInventory',
+    '/seller/pricing/update' => 'SellerController@updatePrice',
     ],
+  
     
     'DELETE' => [
         '/seller/product/:id' => 'SellerController@deleteProduct',

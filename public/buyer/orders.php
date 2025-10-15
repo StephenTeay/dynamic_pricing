@@ -31,7 +31,7 @@ $orders = $orderModel->getOrdersByBuyer($userId);
         <?php if (empty($orders)): ?>
             <div class="section">
                 <p style="text-align: center; padding: 2rem; color: #64748b;">
-                    You haven't placed any orders yet. <a href="/buyer/shop.php">Start shopping</a>
+                    You haven't placed any orders yet. <a href="<?php echo url('/buyer/shop'); ?>">Start shopping</a>
                 </p>
             </div>
         <?php else: ?>
@@ -71,7 +71,7 @@ $orders = $orderModel->getOrdersByBuyer($userId);
                                     </span>
                                 </td>
                                 <td>
-                                    <a href="/buyer/order_detail.php?id=<?php echo $order['order_id']; ?>" 
+                                    <a href="<?php echo url('/buyer/order_detail') . '?id=' . urlencode($order['order_id']); ?>" 
                                        class="btn btn-sm btn-primary">
                                         View Details
                                     </a>

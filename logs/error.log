@@ -1,1 +1,49 @@
 
+[2025-10-12 20:23:58] Login exception: SQLSTATE[HY093]: Invalid parameter number in C:\xampp\htdocs\dynamic\dynamic_pricing\models\User.php on line 20
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\User.php(20): PDOStatement->execute(Array)
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\AuthController.php(138): User->verifyLogin('taiwoayomide899...', 'Boluwatife1@')
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(171): AuthController->login()
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('AuthController@...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/auth/login', 'POST')
+#5 {main}
+[2025-10-12 20:23:58] Router Exception: SQLSTATE[HY093]: Invalid parameter number in C:\xampp\htdocs\dynamic\dynamic_pricing\models\User.php on line 20
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\User.php(20): PDOStatement->execute(Array)
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\AuthController.php(138): User->verifyLogin('taiwoayomide899...', 'Boluwatife1@')
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(171): AuthController->login()
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('AuthController@...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/auth/login', 'POST')
+#5 {main}
+[2025-10-14 21:35:40] Router Exception: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in C:\xampp\htdocs\dynamic\dynamic_pricing\core\Model.php on line 96
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Model.php(96): PDO->prepare('SELECT COUNT(*)...')
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\models\User.php(30): Model->count(Array)
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\AuthController.php(64): User->emailExists('taiwoayomide76@...')
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(171): AuthController->register()
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('AuthController@...', Array)
+#5 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/auth/register', 'POST')
+#6 {main}
+[2025-10-14 21:53:20] Router Exception: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in C:\xampp\htdocs\dynamic\dynamic_pricing\core\Model.php on line 112
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Model.php(112): PDO->rollBack()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\AuthController.php(110): Model->rollback()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(171): AuthController->register()
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('AuthController@...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/auth/register', 'POST')
+#5 {main}
+[2025-10-14 21:53:26] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 27
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Controller.php(10): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(148): Controller->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('HomeController@...', Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/', 'GET')
+#4 {main}
+[2025-10-14 21:53:31] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 27
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Controller.php(10): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(148): Controller->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('HomeController@...', Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/', 'GET')
+#4 {main}
+[2025-10-15 02:05:59] Router Exception: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in C:\xampp\htdocs\dynamic\dynamic_pricing\core\Model.php on line 112
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Model.php(112): PDO->rollBack()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\AuthController.php(110): Model->rollback()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(171): AuthController->register()
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('AuthController@...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/auth/register', 'POST')
+#5 {main}

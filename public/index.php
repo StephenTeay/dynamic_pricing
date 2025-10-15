@@ -62,10 +62,15 @@ try {
     // Ensure we stop execution after the router handles the response
     exit;
 } catch (Exception $e) {
-    // Log the error
+    // Log the error to Apache/PHP log
     error_log("Router Error: " . $e->getMessage());
     error_log("Stack trace: " . $e->getTraceAsString());
-    
+
+    // Also append to app error log for easier access
+    $appLog = __DIR__ . '/../logs/error.log';
+    $msg = sprintf("[%s] Router Exception: %s in %s on line %d\nStack: %s\n", date('Y-m-d H:i:s'), $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());
+    error_log($msg, 3, $appLog);
+
     // Show error page
     http_response_code(500);
     require __DIR__ . '/../views/errors/500.php';
@@ -179,13 +184,13 @@ try {
             <p>Intelligent price management for modern e-commerce</p>
             
             <div class="cta-buttons">
-                <?php if (!Session::isLoggedIn()): ?>
-                    <a href="<?php echo BASE_URL; ?>/register?type=buyer" class="cta-btn cta-primary">Shop Now</a>
-                    <a href="<?php echo BASE_URL; ?>/register?type=seller" class="cta-btn cta-secondary">Become a Seller</a>
+                    <?php if (!Session::isLoggedIn()): ?>
+                    <a href="<?php echo url('/register') . '?type=buyer'; ?>" class="cta-btn cta-primary">Shop Now</a>
+                    <a href="<?php echo url('/register') . '?type=seller'; ?>" class="cta-btn cta-secondary">Become a Seller</a>
                 <?php elseif (Session::isBuyer()): ?>
-                    <a href="/buyer/shop.php" class="cta-btn cta-primary">Start Shopping</a>
+                    <a href="<?php echo url('/buyer/shop'); ?>" class="cta-btn cta-primary">Start Shopping</a>
                 <?php else: ?>
-                    <a href="/seller/dashboard.php" class="cta-btn cta-primary">Go to Dashboard</a>
+                    <a href="<?php echo url('/seller/dashboard'); ?>" class="cta-btn cta-primary">Go to Dashboard</a>
                 <?php endif; ?>
             </div>
         </div>

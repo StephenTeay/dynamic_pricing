@@ -39,3 +39,20 @@
     </style>
 </head>
 <body>
+    <?php
+    // Global flash messages (success / error)
+    require_once __DIR__ . '/../../core/Session.php';
+    if (Session::hasFlash('success')): ?>
+        <div class="container mt-3">
+            <div class="alert alert-success" role="alert">
+                <?php echo htmlspecialchars(Session::getFlash('success')); ?>
+            </div>
+        </div>
+    <?php endif; ?>
+    <?php if (Session::hasFlash('error')): ?>
+        <div class="container mt-3">
+            <div class="alert alert-danger" role="alert">
+                <?php echo htmlspecialchars(Session::getFlash('error')); ?>
+            </div>
+        </div>
+    <?php endif; ?>

@@ -105,7 +105,7 @@ if (!isset($userType)) {
             </div>
         <?php endif; ?>
         
-    <form method="POST" action="/auth/register">
+    <form method="POST" action="<?php echo url('/auth/register'); ?>">
             <div class="form-group">
                 <label for="user_type">Account Type</label>
                 <select id="user_type" name="user_type" required>
@@ -151,7 +151,7 @@ if (!isset($userType)) {
             <button type="submit" class="btn-submit">Create Account</button>
             
             <div class="auth-links">
-                <p>Already have an account? <a href="/login">Login here</a></p>
+                <p>Already have an account? <a href="<?php echo url('/login'); ?>">Login here</a></p>
             </div>
         </form>
     </div>

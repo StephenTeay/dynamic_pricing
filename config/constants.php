@@ -1,6 +1,10 @@
 <?php
 // config/constants.php
 
+// Application Configuration
+define('BASE_PATH', '/dynamic/dynamic_pricing/public');
+define('APP_NAME', 'Dynamic Pricing');
+
 // User Types
 define('USER_TYPE_BUYER', 'buyer');
 define('USER_TYPE_SELLER', 'seller');
