@@ -35,7 +35,7 @@ try {
  */
 function getMockRate($from, $to) {
     $rates = [
-        'NGN_USD' => 1200,
+        'NGN_USD' => 1700,
         'NGN_EUR' => 1300,
         'NGN_GBP' => 1500,
         'USD_NGN' => 0.00083,

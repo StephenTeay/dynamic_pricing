@@ -99,8 +99,10 @@ class Router {
             error_log("Router: Trying to match path: {$this->currentPath} against pattern: {$pattern}");
         }
         
-        // Match current path against pattern
         if (preg_match($pattern, $this->currentPath, $matches)) {
+            if (defined('APP_DEBUG') && APP_DEBUG) {
+                error_log("Router: Match found with matches: " . json_encode($matches));
+            }
             // Get named parameters
             foreach ($matches as $key => $value) {
                 if (is_string($key)) {
@@ -168,7 +170,9 @@ class Router {
         }
 
         try {
-            return call_user_func_array([$controllerInstance, $method], $params);
+            // Convert associative array to positional array
+            $positionalParams = array_values($params);
+            return call_user_func_array([$controllerInstance, $method], $positionalParams);
         } catch (Exception $e) {
             error_log("Router: Error calling {$controllerClass}::{$method}: " . $e->getMessage());
             error_log("Router: " . $e->getTraceAsString());

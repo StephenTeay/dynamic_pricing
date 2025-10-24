@@ -1,13 +1,5 @@
 <?php
-// public/buyer/shop.php
-
-require_once __DIR__ . '/../../config/config.php';
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../core/Session.php';
-require_once __DIR__ . '/../../models/Product.php';
-
-Session::start();
-
+// views/buyer/shop.php
 $productModel = new Product();
 $category = $_GET['category'] ?? null;
 $search = $_GET['search'] ?? null;
@@ -34,9 +26,63 @@ $categories = ['Electronics', 'Fashion', 'Home', 'Books', 'Sports'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base-url" content="<?php echo rtrim(BASE_URL, '/'); ?>">
     <title>Shop - <?php echo APP_NAME; ?></title>
     <link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/css/main.css">
     <link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/css/buyer.css">
+    <link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/css/toast.css">
+    <script>
+        window.BASE_URL = '<?php echo BASE_URL; ?>';
+                    quantity = parseInt(quantity);
+                    
+                    const existingItem = this.items.find(item => item.id === productId);
+                    if (existingItem) {
+                        existingItem.quantity += quantity;
+                    } else {
+                        this.items.push({ id: productId, quantity: quantity });
+                    }
+                    this.save();
+                    this.showToast('Added to cart successfully!', 'success');
+                
+
+                save: function() {
+                    localStorage.setItem('cart', JSON.stringify(this.items));
+                    this.updateCartCount();
+                },
+
+                updateCartCount: function() {
+                    const cartCount = document.getElementById('cart-count');
+                    if (cartCount) {
+                        const count = this.items.reduce((total, item) => total + item.quantity, 0);
+                        cartCount.textContent = count;
+                        cartCount.style.display = count > 0 ? 'block' : 'none';
+                    }
+                },
+
+                showToast: function(message, type = 'success') {
+                    const toast = document.createElement('div');
+                    toast.className = `toast ${type}`;
+                    toast.textContent = message;
+                    document.body.appendChild(toast);
+                    setTimeout(() => toast.remove(), 3000);
+                }
+            
+
+            // Initialize cart
+            cart.init();
+
+            // Add global addToCart function
+            window.addToCart = function(productId) {
+                try {
+                    const quantity = document.getElementById('quantity')?.value || 1;
+                    cart.addItem(productId, quantity);
+                } catch (error) {
+                    console.error('Error adding to cart:', error);
+                    cart.showToast('Failed to add item to cart. Please try again.', 'error');
+                }
+            };
+       
+    </script>
 </head>
 <body>
     <?php include __DIR__ . '/../../views/layouts/buyer_nav.php'; ?>
@@ -46,35 +92,36 @@ $categories = ['Electronics', 'Fashion', 'Home', 'Books', 'Sports'];
         
         <!-- Filter Section -->
         <div class="filter-section">
-            <form method="GET" class="filter-form">
-                <div class="filter-group">
-                    <input type="text" name="search" class="form-control" 
-                           placeholder="Search products..." value="<?php echo htmlspecialchars($search ?? ''); ?>">
-                </div>
-                
-                <div class="filter-group">
-                    <select name="category" class="form-control">
+            <form action="<?php echo url('buyer/shop'); ?>" method="GET" class="filters">
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select name="category" id="category">
                         <option value="">All Categories</option>
                         <?php foreach ($categories as $cat): ?>
-                            <option value="<?php echo htmlspecialchars($cat); ?>" 
-                                    <?php echo $category === $cat ? 'selected' : ''; ?>>
+                            <option value="<?php echo htmlspecialchars($cat); ?>" <?php echo $category === $cat ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($cat); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
-                
-                <div class="filter-group">
-                    <input type="number" name="min_price" class="form-control" 
-                           placeholder="Min Price" value="<?php echo htmlspecialchars($minPrice ?? ''); ?>">
+
+                <div class="form-group">
+                    <label for="search">Search</label>
+                    <input type="text" id="search" name="search" value="<?php echo htmlspecialchars($search ?? ''); ?>" placeholder="Search products...">
                 </div>
-                
-                <div class="filter-group">
-                    <input type="number" name="max_price" class="form-control" 
-                           placeholder="Max Price" value="<?php echo htmlspecialchars($maxPrice ?? ''); ?>">
+
+                <div class="form-group">
+                    <label>Price Range</label>
+                    <div class="price-range">
+                        <input type="number" name="min_price" placeholder="Min" value="<?php echo htmlspecialchars($minPrice ?? ''); ?>" min="0">
+                        <input type="number" name="max_price" placeholder="Max" value="<?php echo htmlspecialchars($maxPrice ?? ''); ?>" min="0">
+                    </div>
                 </div>
-                
-                <button type="submit" class="btn btn-primary">Filter</button>
+
+                <div class="filter-buttons">
+                    <button type="submit" class="apply">Filter</button>
+                    <a href="<?php echo url('buyer/shop'); ?>" class="reset">Reset</a>
+                </div>
             </form>
         </div>
         
@@ -93,8 +140,13 @@ $categories = ['Electronics', 'Fashion', 'Home', 'Books', 'Sports'];
     </div>
     
     <?php include __DIR__ . '/../../views/layouts/footer.php'; ?>
-    
-    <script src="<?php echo ASSETS_URL; ?>/js/app.js"></script>
-    <script src="<?php echo ASSETS_URL; ?>/js/buyer/shop.js"></script>
+
+    <script>
+        window.appConfig = {
+            basePath: '<?php echo BASE_PATH; ?>'
+        };
+    </script>
+    <script src="<?php echo asset('js/app.js'); ?>"></script>
+    <script src="<?php echo asset('js/buyer/cart.js'); ?>"></script>
 </body>
 </html>

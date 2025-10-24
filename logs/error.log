@@ -47,3 +47,109 @@ Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Model.php(112): PDO->roll
 #3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('AuthController@...', Array)
 #4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/auth/register', 'POST')
 #5 {main}
+[2025-10-15 04:33:02] Router Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.name' in 'field list' in C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php on line 98
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php(98): PDO->prepare('SELECT p.*, \r\n ...')
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\SellerController.php(88): Product->getProductsWithInventory(11)
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\SellerController.php(359): SellerController->getProducts()
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(173): SellerController->pricing()
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('SellerControlle...', Array)
+#5 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/seller/pricing', 'GET')
+#6 {main}
+[2025-10-17 21:29:06] Router Exception: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away in C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php on line 31
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php(31): PDO->prepare('SELECT p.*, \r\n ...')
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\SellerController.php(402): Product->findWithInventory('3')
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(183): SellerController->editProductForm(Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('SellerControlle...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/seller/product...', 'GET')
+#5 {main}
+[2025-10-17 21:56:45] Router Exception: SQLSTATE[HY093]: Invalid parameter number in C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php on line 84
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php(84): PDOStatement->execute()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\BuyerController.php(28): Product->searchProducts('belt', '')
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(183): BuyerController->shop()
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('BuyerController...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(61): Router->dispatch('/buyer/shop', 'GET')
+#5 {main}
+[2025-10-18 05:34:57] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 29
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Controller.php(10): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(158): Controller->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('HomeController@...', Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(66): Router->dispatch('/', 'GET')
+#4 {main}
+[2025-10-18 05:34:59] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 29
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Controller.php(10): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(158): Controller->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('HomeController@...', Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(66): Router->dispatch('/', 'GET')
+#4 {main}
+[2025-10-18 05:37:38] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 29
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Controller.php(10): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(158): Controller->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('HomeController@...', Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(66): Router->dispatch('/', 'GET')
+#4 {main}
+[2025-10-18 05:38:40] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 29
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Controller.php(10): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(158): Controller->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('HomeController@...', Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(66): Router->dispatch('/', 'GET')
+#4 {main}
+[2025-10-18 05:39:20] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 29
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Controller.php(10): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(158): Controller->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('HomeController@...', Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(66): Router->dispatch('/', 'GET')
+#4 {main}
+[2025-10-18 05:39:32] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 29
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Controller.php(10): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(158): Controller->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('HomeController@...', Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(66): Router->dispatch('/', 'GET')
+#4 {main}
+[2025-10-18 06:28:30] Router Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'u.business_name' in 'field list' in C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php on line 34
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php(34): PDO->prepare('SELECT p.*, \r\n ...')
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\BuyerController.php(47): Product->findWithInventory('4')
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(175): BuyerController->productDetail('4')
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('BuyerController...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(73): Router->dispatch('/buyer/product/...', 'GET')
+#5 {main}
+[2025-10-18 06:28:42] Router Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'u.business_name' in 'field list' in C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php on line 34
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php(34): PDO->prepare('SELECT p.*, \r\n ...')
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\BuyerController.php(47): Product->findWithInventory('4')
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(175): BuyerController->productDetail('4')
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('BuyerController...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(73): Router->dispatch('/buyer/product/...', 'GET')
+#5 {main}
+[2025-10-18 06:29:01] Router Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'u.business_name' in 'field list' in C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php on line 34
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php(34): PDO->prepare('SELECT p.*, \r\n ...')
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\BuyerController.php(47): Product->findWithInventory('4')
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(175): BuyerController->productDetail('4')
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('BuyerController...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(73): Router->dispatch('/buyer/product/...', 'GET')
+#5 {main}
+[2025-10-18 06:30:26] Router Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'u.company_name' in 'field list' in C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php on line 35
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php(35): PDO->prepare('SELECT p.*, \r\n ...')
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\BuyerController.php(47): Product->findWithInventory('4')
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(175): BuyerController->productDetail('4')
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('BuyerController...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(73): Router->dispatch('/buyer/product/...', 'GET')
+#5 {main}
+[2025-10-18 06:30:50] Router Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'u.company_name' in 'field list' in C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php on line 35
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\models\Product.php(35): PDO->prepare('SELECT p.*, \r\n ...')
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\BuyerController.php(47): Product->findWithInventory('4')
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(175): BuyerController->productDetail('4')
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('BuyerController...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(73): Router->dispatch('/buyer/product/...', 'GET')
+#5 {main}
+[2025-10-19 14:26:24] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 29
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Model.php(13): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\controllers\AuthController.php(15): Model->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(150): AuthController->__construct()
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('AuthController@...', Array)
+#4 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(73): Router->dispatch('/login', 'GET')
+#5 {main}
+[2025-10-19 14:26:38] Router Exception: Database connection failed in C:\xampp\htdocs\dynamic\dynamic_pricing\config\database.php on line 29
+Stack: #0 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Controller.php(10): Database->getConnection()
+#1 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(150): Controller->__construct()
+#2 C:\xampp\htdocs\dynamic\dynamic_pricing\core\Router.php(84): Router->callHandler('HomeController@...', Array)
+#3 C:\xampp\htdocs\dynamic\dynamic_pricing\public\index.php(73): Router->dispatch('/', 'GET')
+#4 {main}

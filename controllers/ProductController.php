@@ -182,20 +182,23 @@ class ProductController {
 
         // Generate unique filename
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = uniqid() . '_' . time() . '.' . $extension;
-        $filepath = UPLOAD_DIR . $filename;
-
-        // Create upload directory if not exists
-        if (!is_dir(UPLOAD_DIR)) {
-            mkdir(UPLOAD_DIR, 0755, true);
+        $filename = uniqid() . '_' . basename($file['name']);
+        
+        // Ensure uploads directory exists
+        $uploadsDir = PUBLIC_PATH . '/assets/images/uploads';
+        if (!is_dir($uploadsDir)) {
+            mkdir($uploadsDir, 0755, true);
         }
+        
+        $filepath = $uploadsDir . '/' . $filename;
 
         // Move uploaded file
         if (!move_uploaded_file($file['tmp_name'], $filepath)) {
             throw new Exception('Failed to upload image');
         }
 
-        return ASSETS_URL . '/images/uploads/' . $filename;
+        // Return relative path from assets directory
+        return 'images/uploads/' . $filename;
     }
 
     private function generateSKU() {

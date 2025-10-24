@@ -2,6 +2,9 @@
 $pageTitle = APP_NAME . ' - Inventory';
 require_once __DIR__ . '/../layouts/header.php';
 require_once __DIR__ . '/../layouts/seller_nav.php';
+
+// Add JavaScript file for inventory management
+echo '<script src="/dynamic/dynamic_pricing/public/assets/js/seller/inventory-ui.js" defer></script>';
 ?>
 
 <div class="container mt-4">
@@ -14,7 +17,7 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
         <ul>
             <?php foreach ($lowStock as $product): ?>
             <li>
-                <?php echo htmlspecialchars($product['name']); ?> - 
+                <?php echo htmlspecialchars($product['product_name']); ?> - 
                 <?php echo $product['stock_quantity']; ?> units left
             </li>
             <?php endforeach; ?>
@@ -42,7 +45,7 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
             <tbody>
                 <?php foreach ($products as $product): ?>
                 <tr>
-                    <td><?php echo htmlspecialchars($product['name']); ?></td>
+                    <td><?php echo htmlspecialchars($product['product_name']); ?></td>
                     <td><?php echo htmlspecialchars($product['sku']); ?></td>
                     <td><?php echo $product['stock_quantity']; ?></td>
                     <td><?php echo $product['min_stock_quantity']; ?></td>
@@ -52,7 +55,7 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
                         </span>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-primary update-stock" data-product-id="<?php echo $product['product_id']; ?>">
+                        <button class="btn btn-sm btn-primary update-stock" data-product-id="<?php echo $product['product_id']; ?>" data-current-stock="<?php echo $product['stock_quantity']; ?>">
                             Update Stock
                         </button>
                     </td>

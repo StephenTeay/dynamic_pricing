@@ -11,39 +11,41 @@ define('APP_VERSION', '1.0.0');
 define('APP_ENV', 'development'); // development, production
 define('APP_DEBUG', true);
 
-// Base paths
-define('BASE_PATH', dirname(__DIR__));
-define('PUBLIC_PATH', BASE_PATH . '/public');
+// Base paths - for filesystem operations
+define('ROOT_PATH', dirname(__DIR__));
+define('PUBLIC_PATH', ROOT_PATH . '/public');
 define('UPLOAD_DIR', PUBLIC_PATH . '/assets/images/uploads/');
+
+// Base paths
+define('BASE_PATH', '/dynamic/dynamic_pricing/public'); // For routing/filesystem
+define('APP_BASE', '/dynamic/dynamic_pricing/public'); // For URLs and assets
 
 // URLs
 // Compute BASE_URL dynamically so the app works when placed in a subdirectory.
-// Fallback to http://localhost when running from CLI or when server vars are not available.
-if (php_sapi_name() === 'cli' || empty($_SERVER['HTTP_HOST'])) {
-    // CLI environment or no host header available
-    define('BASE_URL', 'http://localhost');
-} else {
-    // Determine the protocol
-    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
+if (!defined('BASE_URL')) {
+    if (php_sapi_name() === 'cli' || empty($_SERVER['HTTP_HOST'])) {
+        // CLI environment or no host header available
+        define('BASE_URL', 'http://localhost' . BASE_PATH);
+    } else {
+        // Determine the protocol
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || 
+                 (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
 
-    // Get host (may include port)
-    $host = $_SERVER['HTTP_HOST'];
+        // Get host (may include port)
+        $host = $_SERVER['HTTP_HOST'];
 
-    // Determine base path from SCRIPT_NAME or PHP_SELF. The public entrypoint lives in /public,
-    // so strip off the trailing /index.php or /public/index.php if present.
-    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
-    $scriptDir = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
-
-    // If the app is served from the 'public' folder, we want the path up to that folder.
-    // Example: /dynamic/dynamic_pricing/public -> keep /dynamic/dynamic_pricing/public
-    $basePath = $scriptDir === '/' ? '' : $scriptDir;
-
-    // Build BASE_URL
-    define('BASE_URL', $scheme . '://' . $host . $basePath);
+        // Build BASE_URL using the constant BASE_PATH
+        define('BASE_URL', $scheme . '://' . $host . BASE_PATH);
+    }
 }
 
+// Include common utilities and helpers
+require_once ROOT_PATH . '/utils/url.php';
+
 // Assets URL relative to BASE_URL
-define('ASSETS_URL', rtrim(BASE_URL, '/') . '/assets');
+if (!defined('ASSETS_URL')) {
+    define('ASSETS_URL', rtrim(BASE_URL, '/') . '/assets');
+}
 
 // Security
 define('SESSION_LIFETIME', 3600); // 1 hour
@@ -95,15 +97,15 @@ ini_set('session.use_only_cookies', 1);
 ini_set('session.cookie_secure', APP_ENV === 'production' ? 1 : 0);
 
 // Load helpers
-require_once BASE_PATH . '/utils/helpers.php';
+require_once ROOT_PATH . '/utils/helpers.php';
 
 // Autoloader for classes
 spl_autoload_register(function ($class) {
     $paths = [
-        BASE_PATH . '/core/',
-        BASE_PATH . '/models/',
-        BASE_PATH . '/controllers/',
-        BASE_PATH . '/services/',
+        ROOT_PATH . '/core/',
+        ROOT_PATH . '/models/',
+        ROOT_PATH . '/controllers/',
+        ROOT_PATH . '/services/',
     ];
     
     foreach ($paths as $path) {

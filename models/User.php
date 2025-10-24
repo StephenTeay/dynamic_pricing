@@ -61,5 +61,18 @@ class User extends Model {
         $stmt = $this->db->prepare($query);
         return $stmt->execute([':token' => $token]);
     }
+
+    public function getNotifications($userId) {
+        $query = "SELECT * FROM notifications WHERE user_id = :user_id ORDER BY created_at DESC";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':user_id' => $userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function markNotificationRead($notificationId) {
+        $query = "UPDATE notifications SET read_at = NOW() WHERE notification_id = :notification_id";
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([':notification_id' => $notificationId]);
+    }
 }
 ?>

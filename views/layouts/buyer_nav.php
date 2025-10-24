@@ -6,7 +6,10 @@
         
         <div style="display: flex; gap: 2rem; align-items: center;">
             <a href="<?php echo url('/buyer/shop'); ?>" style="text-decoration: none; color: var(--text-secondary);">Shop</a>
-            <a href="<?php echo url('/buyer/cart'); ?>" style="text-decoration: none; color: var(--text-secondary);">Cart</a>
+            <a href="<?php echo url('/buyer/cart'); ?>" style="text-decoration: none; color: var(--text-secondary); position: relative;">
+                Cart
+                <span id="cart-count" style="position: absolute; top: -8px; right: -12px; background: var(--primary-color); color: white; border-radius: 50%; width: 18px; height: 18px; display: none; font-size: 12px; text-align: center; line-height: 18px;">0</span>
+            </a>
             <a href="<?php echo url('/buyer/orders'); ?>" style="text-decoration: none; color: var(--text-secondary);">Orders</a>
             
             <?php if (\Session::isLoggedIn()): ?>

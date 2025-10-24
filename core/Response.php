@@ -2,44 +2,40 @@
 // core/Response.php
 
 class Response {
-    private $statusCode = 200;
-    private $headers = [];
-    private $body = '';
-    
-    public function __construct($body = '', $statusCode = 200) {
-        $this->body = $body;
-        $this->statusCode = $statusCode;
-    }
-    
-    public function setStatusCode($code) {
-        $this->statusCode = $code;
-        return $this;
-    }
-    
-    public function setHeader($key, $value) {
-        $this->headers[$key] = $value;
-        return $this;
-    }
-    
-    public function setBody($body) {
-        $this->body = $body;
-        return $this;
-    }
-    
-    public function json($data) {
-        $this->setHeader('Content-Type', 'application/json');
-        $this->body = json_encode($data);
-        return $this;
-    }
-    
-    public function send() {
-        http_response_code($this->statusCode);
+    public static function json($data, $statusCode = 200) {
+        // Disable error reporting for this response
+        error_reporting(0);
+        ini_set('display_errors', 0);
         
-        foreach ($this->headers as $key => $value) {
-            header("$key: $value");
+        // Clear any output buffers
+        while (ob_get_level()) {
+            ob_end_clean();
         }
         
-        echo $this->body;
-    }
+        // Set headers
+        header('Content-Type: application/json; charset=utf-8');
+        http_response_code($statusCode);
+        
+        // Convert data to JSON
+        $json = json_encode($data);
+        
+        // Check for JSON encoding errors
+        if ($json === false) {
+            // Log the error
+            error_log("JSON encoding error: " . json_last_error_msg());
+            
+            // Send a generic error response
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Internal server error'
+            ]);
+            exit;
+        }
+        
+        // Output the JSON
+        echo $json;
+        exit;
+}
 }
 ?>

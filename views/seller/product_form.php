@@ -1,6 +1,7 @@
 <?php
 // Check if editing or creating new product
 $isEditing = isset($product);
+error_log("Product Form Data: " . print_r($product ?? 'No product data', true));
 require_once __DIR__ . '/../layouts/header.php';
 require_once __DIR__ . '/../layouts/seller_nav.php';
 ?>
@@ -25,8 +26,8 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
                             <input type="text" 
                                    class="form-control" 
                                    id="name" 
-                                   name="name" 
-                                   value="<?php echo $isEditing ? htmlspecialchars($product['name']) : ''; ?>" 
+                                   name="product_name" 
+                                   value="<?php echo $isEditing ? htmlspecialchars($product['product_name']) : ''; ?>" 
                                    required>
                         </div>
 
@@ -46,9 +47,9 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
                             <label for="description" class="form-label">Description *</label>
                             <textarea class="form-control" 
                                       id="description" 
-                                      name="description" 
+                                      name="product_description" 
                                       rows="4" 
-                                      required><?php echo $isEditing ? htmlspecialchars($product['description']) : ''; ?></textarea>
+                                      required><?php echo $isEditing ? htmlspecialchars($product['product_description']) : ''; ?></textarea>
                         </div>
 
                         <div class="row">
@@ -62,7 +63,7 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
                                            name="price" 
                                            step="0.01" 
                                            min="0" 
-                                           value="<?php echo $isEditing ? number_format($product['price'], 2) : ''; ?>" 
+                                           value="<?php echo $isEditing ? number_format($product['current_price'], 2) : ''; ?>" 
                                            required>
                                 </div>
                             </div>
@@ -77,7 +78,7 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
                                            name="cost" 
                                            step="0.01" 
                                            min="0" 
-                                           value="<?php echo $isEditing ? number_format($product['cost'], 2) : ''; ?>" 
+                                           value="<?php echo $isEditing ? number_format($product['base_cost'], 2) : ''; ?>" 
                                            required>
                                 </div>
                             </div>
@@ -91,7 +92,7 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
                                            id="stock_quantity" 
                                            name="stock_quantity" 
                                            min="0" 
-                                           value="<?php echo $isEditing ? $product['stock_quantity'] : ''; ?>" 
+                                           value="<?php echo $isEditing ? $product['quantity_available'] : ''; ?>" 
                                            required>
                                 </div>
                             </div>
@@ -107,7 +108,7 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
                                            id="min_stock_quantity" 
                                            name="min_stock_quantity" 
                                            min="0" 
-                                           value="<?php echo $isEditing ? $product['min_stock_quantity'] : '5'; ?>">
+                                           value="<?php echo $isEditing ? $product['low_stock_threshold'] : '5'; ?>">
                                 </div>
                             </div>
 
@@ -128,7 +129,7 @@ require_once __DIR__ . '/../layouts/seller_nav.php';
                             <label for="image" class="form-label">Product Image</label>
                             <?php if ($isEditing && !empty($product['image_url'])): ?>
                                 <div class="mb-2">
-                                    <img src="<?php echo asset('images/products/' . $product['image_url']); ?>" 
+                                    <img src="<?php echo $product['image_url']; ?>" 
                                          alt="Current product image" 
                                          style="max-width: 200px;" 
                                          class="img-thumbnail">

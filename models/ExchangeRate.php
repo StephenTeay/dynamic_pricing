@@ -10,7 +10,7 @@ class ExchangeRate extends Model {
     public function getLatestRate($fromCurrency, $toCurrency) {
         $query = "SELECT * FROM {$this->table} 
                   WHERE from_currency = :from AND to_currency = :to
-                  ORDER BY updated_at DESC LIMIT 1";
+                  ORDER BY last_updated DESC LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':from' => $fromCurrency, ':to' => $toCurrency]);
         return $stmt->fetch();
@@ -21,15 +21,14 @@ class ExchangeRate extends Model {
         
         if ($existing) {
             return $this->update($existing['rate_id'], [
-                'rate' => $rate,
-                'updated_at' => date('Y-m-d H:i:s')
+                'rate' => $rate
             ]);
         } else {
             return $this->create([
                 'from_currency' => $fromCurrency,
                 'to_currency' => $toCurrency,
                 'rate' => $rate,
-                'updated_at' => date('Y-m-d H:i:s')
+                'created_at' => date('Y-m-d H:i:s')
             ]);
         }
     }

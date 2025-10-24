@@ -43,16 +43,6 @@ function redirect($url) {
 }
 
 /**
- * Build absolute URL for the application using BASE_URL
- * Usage: url('/login') => http://host/subpath/login
- */
-function url($path = '') {
-    $base = rtrim(BASE_URL, '/');
-    $path = '/' . ltrim($path, '/');
-    return $base . $path;
-}
-
-/**
  * Sanitize input
  */
 function sanitize($input) {

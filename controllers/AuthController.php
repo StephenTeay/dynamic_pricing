@@ -258,6 +258,95 @@ class AuthController extends Controller {
         exit;
     }
     
+    public function showChangePassword() {
+        if (!Session::isLoggedIn()) {
+            Session::setFlash('error', 'Please login to change your password');
+            redirect('/login');
+            exit;
+        }
+        
+        $pageTitle = APP_NAME . ' - Change Password';
+        require_once __DIR__ . '/../views/auth/change_password.php';
+    }
+    
+    public function changePassword() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !Session::isLoggedIn()) {
+            redirect('/login');
+            exit;
+        }
+        
+        $validator = new Validator($_POST);
+        $rules = [
+            'current_password' => 'required|min:8',
+            'new_password' => 'required|min:8',
+            'confirm_password' => 'required|confirmed:new_password'
+        ];
+        
+        if (!$validator->validate($rules)) {
+            Session::setFlash('error', $validator->getFirstError());
+            Session::setFlash('old', $_POST);
+            redirect('/auth/change-password');
+            exit;
+        }
+        
+        $userId = Session::getUserId();
+        $user = $this->userModel->find($userId);
+        
+        if (!$user || !password_verify($_POST['current_password'], $user['password'])) {
+            Session::setFlash('error', 'Current password is incorrect');
+            redirect('/auth/change-password');
+            exit;
+        }
+        
+        $success = $this->userModel->updatePassword($userId, $_POST['new_password']);
+        
+        if ($success) {
+            Session::setFlash('success', 'Password updated successfully');
+            redirect('/seller/settings');
+        } else {
+            Session::setFlash('error', 'Failed to update password');
+            redirect('/auth/change-password');
+        }
+    }
+    
+    public function notifications() {
+        if (!Session::isLoggedIn()) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+        
+        $notifications = $this->userModel->getNotifications(Session::getUserId());
+        
+        header('Content-Type: application/json');
+        echo json_encode([
+            'notifications' => $notifications,
+            'unread_count' => count(array_filter($notifications, fn($n) => !$n['read_at']))
+        ]);
+        exit;
+    }
+    
+    public function markNotificationRead() {
+        if (!Session::isLoggedIn()) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+        
+        $notificationId = $_POST['notification_id'] ?? null;
+        if (!$notificationId) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Notification ID is required']);
+            exit;
+        }
+        
+        $success = $this->userModel->markNotificationRead($notificationId);
+        
+        header('Content-Type: application/json');
+        echo json_encode(['success' => $success]);
+        exit;
+    }
+    
     /**
      * Show forgot password form
      */

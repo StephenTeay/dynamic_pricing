@@ -8,7 +8,13 @@ class PricingHistory extends Model {
     protected $primaryKey = 'history_id';
     
     public function getByProductId($productId) {
-        return $this->findAll(['product_id' => $productId], 'changed_at DESC');
+        $stmt = $this->db->prepare("
+            SELECT * FROM {$this->table}
+            WHERE product_id = :product_id
+            ORDER BY pricing_history_id DESC
+        ");
+        $stmt->execute([':product_id' => $productId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>

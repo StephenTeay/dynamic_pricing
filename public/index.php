@@ -11,6 +11,7 @@ Session::start();
 // Get the request URI and method
 $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $requestMethod = $_SERVER['REQUEST_METHOD'];
+$basePath = rtrim(BASE_PATH, '/');
 
 // Debug raw request information
 if (defined('APP_DEBUG') && APP_DEBUG) {
@@ -20,20 +21,31 @@ if (defined('APP_DEBUG') && APP_DEBUG) {
     error_log("DOCUMENT_ROOT: " . $_SERVER['DOCUMENT_ROOT']);
 }
 
-// Remove base path from request URI if it exists
-$scriptDir = dirname($_SERVER['SCRIPT_NAME']);
-$basePath = str_replace('\\', '/', $scriptDir);
-$basePath = $basePath === '/' ? '' : rtrim($basePath, '/');
+// Extract base path from config
+$configBasePath = rtrim(BASE_PATH, '/');
 
-// Clean up the request URI
-if ($basePath !== '' && strpos($requestUri, $basePath) === 0) {
-    $requestUri = substr($requestUri, strlen($basePath));
-}
+// Clean up the request URI by removing consecutive slashes
+$requestUri = preg_replace('#/+#', '/', $requestUri);
+
+// Remove any repetitions of the base path
+$pattern = '#^' . preg_quote($configBasePath, '#') . '(?:/+' . preg_quote($configBasePath, '#') . ')*#';
+$cleanUri = preg_replace($pattern, '', $requestUri);
+
+// Ensure the URI starts with a single slash
 $requestUri = '/' . ltrim($requestUri, '/');
+
+// Extract the path after the base path
+$relativePath = preg_replace('#^' . preg_quote($basePath, '#') . '#', '', $requestUri);
+$relativePath = '/' . ltrim($relativePath, '/');
+
+// If accessing the base URL with or without trailing slash, route to home page
+if ($relativePath === '/' || $relativePath === '/public' || $relativePath === '/public/') {
+    $relativePath = '/';
+}
 
 // Debug processed information
 if (defined('APP_DEBUG') && APP_DEBUG) {
-    error_log("Processed Request URI: " . $requestUri);
+    error_log("Processed Request URI: " . $relativePath);
     error_log("Request Method: " . $requestMethod);
     error_log("Base Path: " . $basePath);
 }
@@ -58,7 +70,7 @@ foreach ($routes as $method => $routeList) {
 
 // Handle the request
 try {
-    $router->dispatch($requestUri, $requestMethod);
+    $router->dispatch($relativePath, $requestMethod);
     // Ensure we stop execution after the router handles the response
     exit;
 } catch (Exception $e) {

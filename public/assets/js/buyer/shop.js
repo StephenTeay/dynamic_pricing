@@ -1,56 +1,40 @@
 // public/assets/js/buyer/shop.js
+import { Cart } from './cart.js';
 
-class Cart {
-    static items = [];
-    
-    static addItem(productId, quantity = 1) {
-        const existingItem = this.items.find(item => item.productId === productId);
+// Product detail page navigation
+export function viewProduct(productId) {
+    const basePath = document.querySelector('meta[name="base-url"]')?.content || '';
+    const cleanBasePath = basePath.replace(/\/+$/, '');
+    window.location.href = `${cleanBasePath}/buyer/product/${productId}`;
+}
+
+// Add to cart functionality - make it available globally for onclick handlers
+window.addToCart = function(productId) {
+    try {
+        // Get quantity from input if it exists, otherwise use 1
+        const quantity = document.getElementById('quantity')?.value || 1;
+        const cart = Cart.getInstance();
+        cart.addItem(parseInt(productId), parseInt(quantity));
         
-        if (existingItem) {
-            existingItem.quantity += quantity;
-        } else {
-            this.items.push({ productId, quantity });
-        }
+        // Show success message
+        const message = document.createElement('div');
+        message.className = 'toast success';
+        message.textContent = 'Added to cart successfully!';
+        document.body.appendChild(message);
+        setTimeout(() => message.remove(), 3000);
+    } catch (error) {
+        console.error('Error adding to cart:', error);
         
-        this.save();
-        Toast.show('Added to cart!', 'success');
-    }
-    
-    static removeItem(productId) {
-        this.items = this.items.filter(item => item.productId !== productId);
-        this.save();
-    }
-    
-    static clear() {
-        this.items = [];
-        this.save();
-    }
-    
-    static save() {
-        // Store in memory (could use localStorage in production)
-        window.cartData = JSON.stringify(this.items);
-    }
-    
-    static load() {
-        if (window.cartData) {
-            this.items = JSON.parse(window.cartData);
-        }
-    }
-    
-    static getTotal() {
-        return this.items.reduce((total, item) => total + item.quantity, 0);
+        // Show error message
+        const message = document.createElement('div');
+        message.className = 'toast error';
+        message.textContent = 'Failed to add item to cart. Please try again.';
+        document.body.appendChild(message);
+        setTimeout(() => message.remove(), 3000);
     }
 }
 
-// Initialize cart on page load
-document.addEventListener('DOMContentLoaded', () => {
-    Cart.load();
+// Cart is initialized by CartManager in shop.php
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Shop page initialized');
 });
-
-function viewProduct(productId) {
-    window.location.href = `/buyer/product?id=${productId}`;
-}
-
-function addToCart(productId) {
-    Cart.addItem(productId, 1);
-}

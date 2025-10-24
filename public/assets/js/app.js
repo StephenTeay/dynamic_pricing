@@ -1,11 +1,19 @@
 // public/assets/js/app.js
 
+// Global configuration
+const BASE_URL = document.querySelector('meta[name="base-url"]')?.content || '';
+
+// Initialize global features
+document.addEventListener('DOMContentLoaded', () => {
+    // Cart initialization is now handled in cart.js module
+    console.log('App initialized');
+});
+
 /**
  * Global application utilities
  */
-
 class App {
-    static apiUrl = '/api/v1';
+    static apiUrl = BASE_URL + '/api/v1';
     
     static async fetch(endpoint, options = {}) {
         const url = `${this.apiUrl}${endpoint}`;

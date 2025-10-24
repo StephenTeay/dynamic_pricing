@@ -1,10 +1,14 @@
 <div class="product-card">
     <div class="product-image">
         <?php if (isset($product['image_url']) && $product['image_url']): ?>
-            <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
-                 alt="<?php echo htmlspecialchars($product['product_name']); ?>">
+            <img src="<?php 
+                $imgUrl = $product['image_url'];
+                // Remove leading /assets/ or assets/ if present
+                $imgUrl = preg_replace('/^\/?(assets\/)?/', '', $imgUrl);
+                echo asset($imgUrl); 
+            ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>">
         <?php else: ?>
-            <img src="<?php echo ASSETS_URL; ?>/images/no-image.png" alt="No image">
+            <img src="<?php echo asset('images/no-image.png'); ?>" alt="No image">
         <?php endif; ?>
         
         <?php if (isset($product['quantity_available']) && $product['quantity_available'] <= $product['low_stock_threshold']): ?>
@@ -23,9 +27,9 @@
         </div>
         
         <div class="product-actions">
-            <button class="btn btn-primary" onclick="viewProduct(<?php echo $product['product_id']; ?>)">
+            <a href="<?php echo url('buyer/product/' . $product['product_id']); ?>" class="btn btn-primary">
                 View
-            </button>
+            </a>
             <button class="btn btn-secondary" onclick="addToCart(<?php echo $product['product_id']; ?>)">
                 Add to Cart
             </button>

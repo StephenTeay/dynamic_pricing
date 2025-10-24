@@ -1,36 +1,10 @@
 <?php
-// public/buyer/product.php
-
-require_once __DIR__ . '/../../config/config.php';
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../core/Session.php';
-require_once __DIR__ . '/../../models/Product.php';
-
-Session::start();
-
-$productId = $_GET['id'] ?? 0;
-
-if (!$productId) {
-    redirect('/buyer/shop');
-    exit;
+// views/buyer/product.php
+if (!defined('BASE_PATH')) {
+    exit('No direct script access allowed');
 }
 
-$productModel = new Product();
-$product = $productModel->getProductDetail($productId);
-
-if (!$product) {
-    redirect('/buyer/shop');
-    exit;
-}
-
-// Get pricing history
-$db = (new Database())->getConnection();
-$historyStmt = $db->prepare(
-    "SELECT * FROM pricing_history WHERE product_id = :product_id 
-     ORDER BY changed_at DESC LIMIT 10"
-);
-$historyStmt->execute([':product_id' => $productId]);
-$priceHistory = $historyStmt->fetchAll();
+// Price history is handled by controller
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,10 +23,14 @@ $priceHistory = $historyStmt->fetchAll();
             <div>
                 <div class="product-detail-image">
                     <?php if ($product['image_url']): ?>
-                        <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
-                             alt="<?php echo htmlspecialchars($product['product_name']); ?>">
+                        <img src="<?php 
+                            $imgUrl = $product['image_url'];
+                            // Remove leading /assets/ or assets/ if present
+                            $imgUrl = preg_replace('/^\/?(assets\/)?/', '', $imgUrl);
+                            echo asset($imgUrl);
+                        ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>">
                     <?php else: ?>
-                        <img src="<?php echo ASSETS_URL; ?>/images/no-image.png" alt="No image">
+                        <img src="<?php echo asset('images/no-image.png'); ?>" alt="No image">
                     <?php endif; ?>
                 </div>
             </div>
@@ -65,7 +43,7 @@ $priceHistory = $historyStmt->fetchAll();
                 </p>
                 
                 <p style="color: #64748b; margin-bottom: 1rem;">
-                    <strong>Seller:</strong> <?php echo htmlspecialchars($product['business_name']); ?>
+                    <strong>Seller:</strong> <?php echo isset($product['business_name']) ? htmlspecialchars($product['business_name']) : 'Unknown Seller'; ?>
                 </p>
                 
                 <div class="product-detail-price">
@@ -77,13 +55,20 @@ $priceHistory = $historyStmt->fetchAll();
                 </p>
                 
                 <div style="margin-bottom: 1.5rem;">
-                    <?php if ($product['quantity_available'] > 0): ?>
+                    <?php 
+                    $inStock = isset($product['quantity_available']) && $product['quantity_available'] > 0;
+                    $lowStock = isset($product['quantity_available']) && isset($product['low_stock_threshold']) && 
+                               $product['quantity_available'] <= $product['low_stock_threshold'] && 
+                               $product['quantity_available'] > 0;
+                    ?>
+                    
+                    <?php if ($inStock): ?>
                         <p style="color: #10b981; font-weight: bold;">✓ In Stock</p>
                     <?php else: ?>
                         <p style="color: #ef4444; font-weight: bold;">✗ Out of Stock</p>
                     <?php endif; ?>
                     
-                    <?php if ($product['quantity_available'] <= $product['low_stock_threshold'] && $product['quantity_available'] > 0): ?>
+                    <?php if ($lowStock): ?>
                         <p style="color: #f59e0b; font-size: 0.875rem;">
                             Only <?php echo $product['quantity_available']; ?> units available
                         </p>
@@ -93,12 +78,13 @@ $priceHistory = $historyStmt->fetchAll();
                 <div class="quantity-selector">
                     <label for="quantity">Quantity:</label>
                     <input type="number" id="quantity" name="quantity" class="quantity-input" 
-                           value="1" min="1" max="<?php echo $product['quantity_available']; ?>"
-                           <?php echo $product['quantity_available'] <= 0 ? 'disabled' : ''; ?>>
+                           value="1" min="1" 
+                           max="<?php echo isset($product['quantity_available']) ? $product['quantity_available'] : 0; ?>"
+                           <?php echo !$inStock ? 'disabled' : ''; ?>>
                 </div>
                 
                 <div style="display: flex; gap: 1rem;">
-                    <?php if ($product['quantity_available'] > 0): ?>
+                    <?php if ($inStock): ?>
                         <button onclick="addToCart(<?php echo $product['product_id']; ?>)" 
                                 class="btn btn-primary" style="flex: 1;">
                             Add to Cart
@@ -125,9 +111,12 @@ $priceHistory = $historyStmt->fetchAll();
                             <td style="padding: 0.5rem 0; color: #64748b;"><strong>Availability:</strong></td>
                             <td style="padding: 0.5rem 0;">
                                 <?php 
-                                if ($product['quantity_available'] > $product['low_stock_threshold']) {
+                                $quantity = isset($product['quantity_available']) ? $product['quantity_available'] : 0;
+                                $threshold = isset($product['low_stock_threshold']) ? $product['low_stock_threshold'] : 5;
+                                
+                                if ($quantity > $threshold) {
                                     echo '<span class="badge" style="background-color: #d1fae5; color: #065f46;">In Stock</span>';
-                                } elseif ($product['quantity_available'] > 0) {
+                                } elseif ($quantity > 0) {
                                     echo '<span class="badge" style="background-color: #fef3c7; color: #92400e;">Limited Stock</span>';
                                 } else {
                                     echo '<span class="badge" style="background-color: #fee2e2; color: #991b1b;">Out of Stock</span>';

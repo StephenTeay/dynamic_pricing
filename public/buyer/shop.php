@@ -34,9 +34,18 @@ $categories = ['Electronics', 'Fashion', 'Home', 'Books', 'Sports'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base-url" content="<?php echo rtrim(BASE_URL, '/'); ?>">
     <title>Shop - <?php echo APP_NAME; ?></title>
     <link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/css/main.css">
     <link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/css/buyer.css">
+    
+    <!-- Initialize app configuration -->
+    <script>
+        window.appConfig = {
+            baseUrl: '<?php echo rtrim(BASE_URL, '/'); ?>',
+            assetsUrl: '<?php echo rtrim(ASSETS_URL, '/'); ?>'
+        };
+    </script>
 </head>
 <body>
     <?php include __DIR__ . '/../../views/layouts/buyer_nav.php'; ?>
@@ -92,9 +101,20 @@ $categories = ['Electronics', 'Fashion', 'Home', 'Books', 'Sports'];
         <?php endif; ?>
     </div>
     
-    <?php include __DIR__ . '/../../views/layouts/footer.php'; ?>
-    
+    <!-- Load JavaScript -->
     <script src="<?php echo ASSETS_URL; ?>/js/app.js"></script>
+    <script src="<?php echo ASSETS_URL; ?>/js/buyer/cart.js"></script>
     <script src="<?php echo ASSETS_URL; ?>/js/buyer/shop.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize CartManager
+            try {
+                window.cartManager = new CartManager();
+            } catch (error) {
+                console.error('Error initializing cart:', error);
+            }
+        });
+    </script>
+    <?php include __DIR__ . '/../../views/layouts/footer.php'; ?>
 </body>
 </html>

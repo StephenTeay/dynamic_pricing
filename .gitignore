@@ -1,2 +1,6 @@
 access.log
 error.log
+app.log
+.env
+db
+pricing.log

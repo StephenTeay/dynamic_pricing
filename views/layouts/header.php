@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="base-url" content="<?php echo rtrim(BASE_URL, '/'); ?>">
     <title><?php echo isset($pageTitle) ? htmlspecialchars($pageTitle) : APP_NAME; ?></title>
     <link rel="stylesheet" href="<?php echo ASSETS_URL; ?>/css/main.css">
     <style>

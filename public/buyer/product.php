@@ -49,7 +49,7 @@ $priceHistory = $historyStmt->fetchAll();
             <div>
                 <div class="product-detail-image">
                     <?php if ($product['image_url']): ?>
-                        <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
+                        <img src="<?php echo asset($product['image_url']); ?>" 
                              alt="<?php echo htmlspecialchars($product['product_name']); ?>">
                     <?php else: ?>
                         <img src="<?php echo ASSETS_URL; ?>/images/no-image.png" alt="No image">
