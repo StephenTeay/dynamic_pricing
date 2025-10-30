@@ -1,0 +1,55 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /dynamic/dynamic_pricing/public/
+    
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    
+    # Allow direct access to asset files
+    RewriteCond %{REQUEST_URI} \.(jpg|jpeg|png|gif|ico|css|js)$ [NC]
+    RewriteRule ^ - [L]
+
+    # If request is for an existing file or directory, serve it directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Send all other requests to index.php
+    RewriteRule ^ index.php [L,QSA]
+
+    # Set proper MIME types
+    AddType image/x-icon .ico
+    AddType image/jpeg .jpg .jpeg
+    AddType image/png .png
+    AddType image/gif .gif
+    AddType text/css .css
+    AddType text/javascript .js
+
+    # Allow access to assets files but prevent directory listing
+    <FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js)$">
+        Order allow,deny
+        Allow from all
+        Require all granted
+    </FilesMatch>
+    
+    # Security headers
+    <FilesMatch "\.(env|json|lock)$">
+        Order deny,allow
+        Deny from all
+    </FilesMatch>
+    
+    # Prevent directory listing
+    Options -Indexes +FollowSymLinks
+    
+    # Cache control for static files
+    <FilesMatch "\.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+    
+    # No cache for PHP files
+    <FilesMatch "\.(php)$">
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+    </FilesMatch>
+</IfModule>
